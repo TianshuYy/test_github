@@ -1,16 +1,32 @@
-def length_of_longest_substring(s):
-    char_index = {}  # 用于记录字符的最后出现位置
-    max_length = 0    # 最长子串的长度
-    start = 0         # 窗口的起始位置
+def longestPalindrome(s):
+    n = len(s)
+    if n <= 1:
+        return s
 
-    for end in range(len(s)):
-        if s[end] in char_index and char_index[s[end]] >= start:
-            start = char_index[s[end]] + 1  # 更新窗口的起始位置
+    dp = [[False] * n for _ in range(n)]
+    start = 0
+    max_length = 1
 
-        char_index[s[end]] = end  # 更新字符的最后出现位置
-        max_length = max(max_length, end - start + 1)
+    for i in range(n):
+        dp[i][i] = True
 
-    return max_length
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                if length == 2:
+                    dp[i][j] = True
+                else:
+                    dp[i][j] = dp[i + 1][j - 1]
 
-s = "abcabcbb"
-print(length_of_longest_substring(s))  # 输出: 3
+            if dp[i][j] and length > max_length:
+                max_length = length
+                start = i
+
+    return s[start:start + max_length]
+
+# 测试示例
+s1 = "babad"
+s2 = "cbbd"
+print(longestPalindrome(s1))  # 输出："bab" 或 "aba"
+print(longestPalindrome(s2))  # 输出："bb"
